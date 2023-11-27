@@ -1,4 +1,4 @@
-CPATH='.;lib/hamcrest-core-1.3.jar;lib/junit-4.13.2.jar'
+CPATH='.;../lib/hamcrest-core-1.3.jar;../lib/junit-4.13.2.jar'
 
 rm -rf student-submission
 rm -rf grading-area
@@ -21,6 +21,8 @@ cp -r TestListExamples.java grading-area
 cp -r student-submission/ListExamples.java grading-area
 
 tests=`find student-submission -name "*.java"`
+passed=0
+failed=0
 
 for file in $tests; do
     if [ -f $file ]; then
@@ -31,13 +33,17 @@ for file in $tests; do
     fi
 done
 
-javac -cp $CPATH grading-area/*.java
-java -cp $CPATH org.junit.runner.JUnitCore grading-area/TestListExamples
+cd grading-area/
+javac -cp $CPATH *.java
+java -cp $CPATH org.junit.runner.JUnitCore TestListExamples
 
 for file in $tests; do
     if [ $? -ne 0 ]; then
         echo "Compile error."
+        $failed=$(($failed+1))
     else
         echo "passed"
+        $passed=$(($passed+1))
     fi
 done
+echo "$passed passed, $failed failed"
